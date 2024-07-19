@@ -14,6 +14,8 @@ import io
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import joblib
+from sklearn.preprocessing import MinMaxScaler
 from PIL import Image
 
 # utils.py 내용을 직접 포함
@@ -126,7 +128,85 @@ def main():
       
     elif choice == 'ML':
         st.subheader('머신러닝(ML)')
-        # ML 관련 코드를 여기에 추가하세요
+        @st.cache_resource
+        def load_scaler():
+            return joblib.load('minmax_scaler.pkl')
+        
+        scaler = load_scaler()
+
+        
+        @st.cache_resource
+        def load_model():
+            with open('best_gbr_model.pkl', 'rb') as file:
+                model = pickle.load(file)
+            return model
+        
+        model = load_model()
+
+        #데이터 로드
+        @st.cache_data
+        def load_data():
+            data = pd.read_csv('khu.csv')
+            return data
+        
+        data = load_data()
+
+        #사용할 특성 선택 (예측 변수 제외)
+        numerical_features = ['tem', 'rh', 'd2.1', 'co10.1']
+        categorical_features = ['facility', 'floor_indicator']
+        features = categorical_features + numerical_features
+
+        #사용자 입력 받기
+        st.write("예측을 위한 값을 입력하세요:")
+        user_input = {}
+
+        # 범주형 변수 입력
+        for feature in categorical_features:
+            unique_values = data[feature].unique()
+            user_input[feature] = st.selectbox(f"{feature} 선택", unique_values)
+
+        # 수치형 변수 입력
+        for feature in numerical_features:
+            min_val = data[feature].min()
+            max_val = data[feature].max()
+            user_input[feature] = st.number_input(f"{feature} 입력", min_value=float(min_val),max_value=float(max_val),value=float(data[feature].mean()))
+
+
+        #예측 버튼
+        if st.button('예측'):
+            # 입력을 데이터프레임으로 변환
+            input_df = pd.DataFrame([user_input])
+
+            # 범주형 변수에 대해 원-핫 인코딩 적용
+            input_encoded = pd.get_dummies(input_df, columns=categorical_features)
+
+            #수치형 변수 스케일링
+            input_scaled = scaler.transform(input_encoded[numerical_features])
+            input_encoded[numerical_features] = input_scaled
+
+            #모델의 특성 순서에 맞게 데이터 정령
+            input_encoded = input_encoded[model.feature_names_in_]
+
+
+            #예측
+            prediction = model.predict(input_encoded)
+
+            st.write(f'예측 결과: {prediction[0]}')
+
+        st.write("특성 중요도:")
+        if hasattr(model, 'feature_importances_') and hasattr(model, 'feautre_names_in_'):
+            feature_importance = model.feature_importances_
+            feature_names = model.feature_names_in_
+            feature_importance_df = pd.DataFrame({'feature': features, 'importance': feature_importance})
+            feature_importance_df = feature_importance_df.sort_values('importance', ascending=False)
+            
+            fig, ax=plt.subplots()
+            sns.barplot(x='importance', y='feature', data=feature_importance_df, ax=ax)
+            plt.title('Feature Importance')
+            st.pyplot(fig)
+        else:
+            st.write("이 모델은 특성 중요도를 제공하지 않습니다.")
+
     else:
         st.subheader('About')
         # About 페이지 관련 코드를 여기에 추가하세요
