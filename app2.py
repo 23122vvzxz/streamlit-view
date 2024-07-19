@@ -81,7 +81,7 @@ def main():
         data = load_data()
 
         #EDA 옵션 선택
-        eda_option = st.adio(
+        eda_option = st.radio(
             "분석 항목:",
             ('데이터 미리보기', '기본 통계량', '결측치 확인', '히스토그램', '상관관계 히트맵', '산점도')
         )
