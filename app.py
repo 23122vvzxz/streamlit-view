@@ -51,11 +51,11 @@ dec_temp = """
 """
 
 def main():
-    col1, col2 = st.columns([3,1])
+#    col1, col2 = st.columns([3,1])
 
-    with col2:
-        image = Image.open('ui.png')
-        st.image(image, width=150)
+#    with col2:
+#        image = Image.open('ui.png')
+#        st.image(image, width=150)
 
     st.subheader("부유 진균 농도 예측")
     st.markdown(html_temp, unsafe_allow_html=True)
