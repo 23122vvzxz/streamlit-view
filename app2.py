@@ -105,7 +105,7 @@ def main():
         elif eda_option == '히스토그램':
         #히스토그램
           st.write("히스토그램:")
-          fig, ax = plt.subplots(figsize=(20,15), nrows=5, ncols=5)
+          fig, axs = plt.subplots(figsize=(20,15), nrows=5, ncols=5)
           axs=axs.flatten()
           
           for i, column in enumerate(data.select_dtypes(include=['float64', 'int64']).columns):
@@ -115,7 +115,7 @@ def main():
               axs[i].tick_params(axis='x', labelsize=8)
               axs[i].tick_params(axis='y', labelsize=8)
 
-          for j in range(i+1, len(axs)):
+          for j in range(numeric_columns, len(axs)):
             fig.delaxes(axs[j])
 
           plt.tight_layout()          
