@@ -105,12 +105,20 @@ def main():
         elif eda_option == '히스토그램':
         #히스토그램
           st.write("히스토그램:")
-          fig, ax = plt.subplots(figsize=(15,10))
-          data.hist(bins=15, ax=ax.flatten())
-          for ax in fig.axes:
-            ax.tick_params(axis='x', labelsize=8)
-            ax.tick_params(axis='y', labelsize=8)
-            ax.set_title(ax.get_title(), fontsize=10)
+          fig, ax = plt.subplots(figsize=(20,15, nrow=5, ncols=5))
+          ax=ax.flatten()
+          
+          for i, column in enumerate(data.select_dtypes(include=['float64', 'int64']).columns):
+            if i < len(axs):
+              sns.hstplot(data=data, x=column, kde=True, ax=axs[i])
+              axs[i].set_title(column)
+              axs[i].tick_params(axis='x', labelsize=8)
+              axs[i].tick_parmas(axis='y', labelsize=8)
+
+          for j in range(i+1 len(axs)):
+            fig.delaxes(axs[j])
+
+          plt.tight_layout()          
           st.pyplot(fig)
 
         elif eda_option == '상관관계 히트맵':
