@@ -61,14 +61,15 @@ def main():
         image = Image.open('ui.png')
         st.image(image, width=150)
 
-#    st.subheader("부유 진균 농도 예측")
-#    st.markdown(html_temp, unsafe_allow_html=True)
+
 
     menu = ['HOME', 'EDA', 'ML', 'About']
     choice = st.sidebar.selectbox("Menu", menu)
 
     if choice == 'HOME':
         st.subheader('HOME')
+        st.subheader("부유 진균 농도 예측")
+        st.markdown(html_temp, unsafe_allow_html=True)
         st.markdown(dec_temp, unsafe_allow_html=True)
     elif choice == 'EDA':
         st.subheader('탐색적 자료 분석(EDA)')
