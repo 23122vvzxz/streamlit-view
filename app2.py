@@ -105,17 +105,17 @@ def main():
         elif eda_option == '히스토그램':
         #히스토그램
           st.write("히스토그램:")
-          fig, ax = plt.subplots(figsize=(20,15, nrow=5, ncols=5))
-          ax=ax.flatten()
+          fig, ax = plt.subplots(figsize=(20,15, nrows=5, ncols=5))
+          axs=axs.flatten()
           
           for i, column in enumerate(data.select_dtypes(include=['float64', 'int64']).columns):
             if i < len(axs):
-              sns.hstplot(data=data, x=column, kde=True, ax=axs[i])
+              sns.histplot(data=data, x=column, kde=True, ax=axs[i])
               axs[i].set_title(column)
               axs[i].tick_params(axis='x', labelsize=8)
-              axs[i].tick_parmas(axis='y', labelsize=8)
+              axs[i].tick_params(axis='y', labelsize=8)
 
-          for j in range(i+1 len(axs)):
+          for j in range(i+1, len(axs)):
             fig.delaxes(axs[j])
 
           plt.tight_layout()          
