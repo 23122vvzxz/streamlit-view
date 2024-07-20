@@ -115,7 +115,7 @@ def main():
               axs[i].tick_params(axis='x', labelsize=8)
               axs[i].tick_params(axis='y', labelsize=8)
 
-          for j in range(numeric_columns, len(axs)):
+          for j in range(i+1, len(axs)):
             fig.delaxes(axs[j])
 
           plt.tight_layout()          
