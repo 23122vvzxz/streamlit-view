@@ -86,52 +86,57 @@ def main():
             "분석 항목:",
             ('데이터 미리보기', '기본 통계량', '결측치 확인', '히스토그램', '상관관계 히트맵', '산점도')
         )
+      
         #데이터 미리보기
-        st.write("데이터 미리보기:")
-        st.write(data.head())
+        if eda_option == '데이터 미리보기':
+          st.write("데이터 미리보기:")
+          st.write(data.head())
 
+        elif eda_option == '기본 통계량':
         #기본 통계량
-        st.write("기본 통계량:")
-        st.write(data.describe())
-
+          st.write("기본 통계량:")
+          st.write(data.describe())
+        
+        elif eda_option == '결측치 확인':
         #결측치 확인
-        st.write("결측치 확인:")
-        st.write(data.isnull().sum())
+          st.write("결측치 확인:")
+          st.write(data.isnull().sum())
 
+        elif eda_option == '히스토그램':
         #히스토그램
-        st.write("히스토그램:")
-        fig, ax = plt.subplots()
-        data.hist(bins=15, figsize=(30,20), ax=ax)
-        st.pyplot(fig)
+          st.write("히스토그램:")
+          fig, ax = plt.subplots(figsize=(15,10))
+          data.hist(bins=15, ax=ax.flatten())
+          for ax in fig.axes:
+            ax.tick_params(axis='x', labelsize=8)
+            ax.tick_params(axis='y', labelsize=8)
+            ax.set_title(ax.get_title(), fontsize=10)
+          st.pyplot(fig)
 
-        for ax in fig.axes:
-            ax.tick_params(axis='x', labelsize=1)
-            ax.tick_params(axis='y', labelsize=1)
-            ax.set_title(ax.get_title(), fontsize=2)
-
+        elif eda_option == '상관관계 히트맵':
         #상관관계 분석
-        st.write("상관관계 히트맵:")
-        fig, ax = plt.subplots()
-        sns.heatmap(data.corr(), annot=False, cmap='coolwarm', ax=ax)
-        st.pyplot(fig)
+          st.write("상관관계 히트맵:")
+          fig, ax = plt.subplots(figsize=(10,8))
+          sns.heatmap(data.corr(), annot=False, cmap='coolwarm', ax=ax)
+          st.pyplot(fig)
 
+        elif eda_option == '산점도':
         #산점도
-        st.write("산점도:")
-        x_axis = st.selectbox('X축 선택', data.columns)
-        y_axis = st.selectbox('Y축 선택', data.columns)
-        color_option = st.selectbox('색상 구분', ['None'] + list(data.columns))
-        fig, ax = plt.subplots(figsize =(10,6))
+          st.write("산점도:")
+          x_axis = st.selectbox('X축 선택', data.columns)
+          y_axis = st.selectbox('Y축 선택', data.columns)
+          color_option = st.selectbox('색상 구분', ['None'] + list(data.columns))
+          fig, ax = plt.subplots(figsize =(10,6))
+          if color_option == 'None':
+              sns.scatterplot(data=data, x=x_axis, y=y_axis, ax=ax)
+          else:
+              sns.scatterplot(data=data, x=x_axis, y=y_axis, hue=color_option, ax=ax)
 
-        if color_option == 'None':
-            sns.scatterplot(data=data, x=x_axis, y=y_axis, ax=ax)
-        else:
-            sns.scatterplot(data=data, x=x_axis, y=y_axis, hue=color_option, ax=ax)
+          plt.xlabel(x_axis)
+          plt.ylabel(y_axis)
+          plt.title('plot')
 
-        plt.xlabel(x_axis)
-        plt.ylabel(y_axis)
-        plt.title('plot')
-
-        st.pyplot(fig)
+          st.pyplot(fig)
       
     elif choice == 'ML':
         st.subheader('머신러닝(ML)')
