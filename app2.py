@@ -195,12 +195,12 @@ def main():
                                            max_value=float(data['rh'].max()),
                                            value=float(data['rh'].mean()))
       
-        user_input['d2.1'] = st.number_input('PM2 농도 [log(μg/m³)]',
+        user_input['d2.1'] = st.number_input('PM10 농도 [log(μg/m³)]',
                                              min_value=float(data['d2.1'].min()),
                                              max_value=float(data['d2.1'].max()),
                                              value=float(data['d2.1'].mean()))
       
-        user_input['co10.1'] = st.number_input('Coarse particle 농도 (ppm)', 
+        user_input['co10.1'] = st.number_input('Coarse particle 농도 [log(μg/m³)]', 
                                                min_value=float(data['co10.1'].min()),
                                                max_value=float(data['co10.1'].max()),
                                                value=float(data['co10.1'].mean()))
