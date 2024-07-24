@@ -213,19 +213,19 @@ def main():
 
             st.write(f'## 오늘의 부유 진균 농도 예측 결과: {prediction[0]} Log(Copy number/m3)')
 
-        st.write("특성 중요도:")
-        if hasattr(model, 'feature_importances_') and hasattr(model, 'feautre_names_in_'):
-            feature_importance = model.feature_importances_
-            feature_names = model.feature_names_in_
-            feature_importance_df = pd.DataFrame({'feature': features, 'importance': feature_importance})
-            feature_importance_df = feature_importance_df.sort_values('importance', ascending=False)
+#        st.write("특성 중요도:")
+#        if hasattr(model, 'feature_importances_') and hasattr(model, 'feautre_names_in_'):
+#            feature_importance = model.feature_importances_
+#            feature_names = model.feature_names_in_
+#            feature_importance_df = pd.DataFrame({'feature': features, 'importance': feature_importance})
+#            feature_importance_df = feature_importance_df.sort_values('importance', ascending=False)
             
-            fig, ax=plt.subplots()
-            sns.barplot(x='importance', y='feature', data=feature_importance_df, ax=ax)
-            plt.title('Feature Importance')
-            st.pyplot(fig)
-        else:
-            st.write("이 모델은 특성 중요도를 제공하지 않습니다.")
+#            fig, ax=plt.subplots()
+#            sns.barplot(x='importance', y='feature', data=feature_importance_df, ax=ax)
+#            plt.title('Feature Importance')
+#            st.pyplot(fig)
+#        else:
+#            st.write("이 모델은 특성 중요도를 제공하지 않습니다.")
 
     else:
         st.subheader('About')
