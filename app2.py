@@ -179,17 +179,31 @@ def main():
         #사용자 입력 받기
         st.write("예측을 위한 값을 입력하세요:")
         user_input = {}
-
-        # 범주형 변수 입력
-        for feature in categorical_features:
-            unique_values = data[feature].unique()
-            user_input[feature] = st.selectbox(f"{feature} 선택", unique_values)
-
-        # 수치형 변수 입력
-        for feature in numerical_features:
-            min_val = data[feature].min()
-            max_val = data[feature].max()
-            user_input[feature] = st.number_input(f"{feature} 입력", min_value=float(min_val),max_value=float(max_val),value=float(data[feature].mean()))
+      
+        #범주형 변수
+        user_input['facility'] = st.selectbox('시설 유형', options=data['facility'].unique())
+        user_input['floor_indicator'] = st.selectbox('지하(0)/지상(1)', options=[0, 1])
+      
+        #수치형 변수
+        user_input['tem'] = st.number_input('기온 (°C)', 
+                                            min_value=float(data['tem'].min()),
+                                            max_value=float(data['tem'].max()),
+                                            value=float(data['tem'].mean()))
+      
+        user_input['rh'] = st.number_input('상대습도 (%)', 
+                                           min_value=float(data['rh'].min()),
+                                           max_value=float(data['rh'].max()),
+                                           value=float(data['rh'].mean()))
+      
+        user_input['d2.1'] = st.number_input('PM2 농도 [log(μg/m³)]',
+                                             min_value=float(data['d2.1'].min()),
+                                             max_value=float(data['d2.1'].max()),
+                                             value=float(data['d2.1'].mean()))
+      
+        user_input['co10.1'] = st.number_input('Coarse particle 농도 (ppm)', 
+                                               min_value=float(data['co10.1'].min()),
+                                               max_value=float(data['co10.1'].max()),
+                                               value=float(data['co10.1'].mean()))
 
 
         #예측 버튼
