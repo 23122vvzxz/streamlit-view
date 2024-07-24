@@ -181,7 +181,7 @@ def main():
         user_input = {}
       
         #범주형 변수
-        user_input['facility'] = st.selectbox('시설 유형', options=data['facility'].unique())
+        user_input['facility'] = st.selectbox('시설 유형 [주차장(1), 지하철/고속철(2), 역사(3), 대형마트(4), 도서관(5), 어린이집(6), 리빙랩(7)', options=data['facility'].unique())
         user_input['floor_indicator'] = st.selectbox('지하(0)/지상(1)', options=[0, 1])
       
         #수치형 변수
