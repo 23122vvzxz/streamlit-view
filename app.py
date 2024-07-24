@@ -61,14 +61,15 @@ def main():
         image = Image.open('ui.png')
         st.image(image, width=150)
 
-    st.subheader("부유 진균 농도 예측")
-    st.markdown(html_temp, unsafe_allow_html=True)
+
 
     menu = ['HOME', 'EDA', 'ML', 'About']
     choice = st.sidebar.selectbox("Menu", menu)
 
     if choice == 'HOME':
         st.subheader('HOME')
+        st.subheader("부유 진균 농도 예측")
+        st.markdown(html_temp, unsafe_allow_html=True)
         st.markdown(dec_temp, unsafe_allow_html=True)
     elif choice == 'EDA':
         st.subheader('탐색적 자료 분석(EDA)')
@@ -79,52 +80,71 @@ def main():
             return data
         
         data = load_data()
+
+        #EDA 옵션 선택
+        eda_option = st.radio(
+            "분석 항목:",
+            ('데이터 미리보기', '기본 통계량', '결측치 확인', '히스토그램', '상관관계 히트맵', '산점도')
+        )
+      
         #데이터 미리보기
-        st.write("데이터 미리보기:")
-        st.write(data.head())
+        if eda_option == '데이터 미리보기':
+          st.write("데이터 미리보기:")
+          st.write(data.head())
 
+        elif eda_option == '기본 통계량':
         #기본 통계량
-        st.write("기본 통계량:")
-        st.write(data.describe())
-
+          st.write("기본 통계량:")
+          st.write(data.describe())
+        
+        elif eda_option == '결측치 확인':
         #결측치 확인
-        st.write("결측치 확인:")
-        st.write(data.isnull().sum())
+          st.write("결측치 확인:")
+          st.write(data.isnull().sum())
 
+        elif eda_option == '히스토그램':
         #히스토그램
-        st.write("히스토그램:")
-        fig, ax = plt.subplots()
-        data.hist(bins=15, figsize=(30,20), ax=ax)
-        st.pyplot(fig)
+          st.write("히스토그램:")
+          fig, axs = plt.subplots(figsize=(20,15), nrows=5, ncols=5)
+          axs=axs.flatten()
+          
+          for i, column in enumerate(data.select_dtypes(include=['float64', 'int64']).columns):
+            if i < len(axs):
+              sns.histplot(data=data, x=column, kde=True, ax=axs[i])
+              axs[i].set_title(column)
+              axs[i].tick_params(axis='x', labelsize=8)
+              axs[i].tick_params(axis='y', labelsize=8)
 
-        for ax in fig.axes:
-            ax.tick_params(axis='x', labelsize=1)
-            ax.tick_params(axis='y', labelsize=1)
-            ax.set_title(ax.get_title(), fontsize=2)
+          for j in range(i+1, len(axs)):
+            fig.delaxes(axs[j])
 
+          plt.tight_layout()          
+          st.pyplot(fig)
+
+        elif eda_option == '상관관계 히트맵':
         #상관관계 분석
-        st.write("상관관계 히트맵:")
-        fig, ax = plt.subplots()
-        sns.heatmap(data.corr(), annot=False, cmap='coolwarm', ax=ax)
-        st.pyplot(fig)
+          st.write("상관관계 히트맵:")
+          fig, ax = plt.subplots(figsize=(10,8))
+          sns.heatmap(data.corr(), annot=False, cmap='coolwarm', ax=ax)
+          st.pyplot(fig)
 
+        elif eda_option == '산점도':
         #산점도
-        st.write("산점도:")
-        x_axis = st.selectbox('X축 선택', data.columns)
-        y_axis = st.selectbox('Y축 선택', data.columns)
-        color_option = st.selectbox('색상 구분', ['None'] + list(data.columns))
-        fig, ax = plt.subplots(figsize =(10,6))
+          st.write("산점도:")
+          x_axis = st.selectbox('X축 선택', data.columns)
+          y_axis = st.selectbox('Y축 선택', data.columns)
+          color_option = st.selectbox('색상 구분', ['None'] + list(data.columns))
+          fig, ax = plt.subplots(figsize =(10,6))
+          if color_option == 'None':
+              sns.scatterplot(data=data, x=x_axis, y=y_axis, ax=ax)
+          else:
+              sns.scatterplot(data=data, x=x_axis, y=y_axis, hue=color_option, ax=ax)
 
-        if color_option == 'None':
-            sns.scatterplot(data=data, x=x_axis, y=y_axis, ax=ax)
-        else:
-            sns.scatterplot(data=data, x=x_axis, y=y_axis, hue=color_option, ax=ax)
+          plt.xlabel(x_axis)
+          plt.ylabel(y_axis)
+          plt.title('plot')
 
-        plt.xlabel(x_axis)
-        plt.ylabel(y_axis)
-        plt.title('plot')
-
-        st.pyplot(fig)
+          st.pyplot(fig)
       
     elif choice == 'ML':
         st.subheader('머신러닝(ML)')
@@ -187,25 +207,24 @@ def main():
             #모델의 특성 순서에 맞게 데이터 정령
             input_encoded = input_encoded[model.feature_names_in_]
 
-
             #예측
             prediction = model.predict(input_encoded)
 
-            st.write(f'예측 결과: {prediction[0]}')
+            st.write(f'## 오늘의 부유 진균 농도 예측 결과: {prediction[0]} Log(Copy number/m³)')
 
-        st.write("특성 중요도:")
-        if hasattr(model, 'feature_importances_') and hasattr(model, 'feautre_names_in_'):
-            feature_importance = model.feature_importances_
-            feature_names = model.feature_names_in_
-            feature_importance_df = pd.DataFrame({'feature': features, 'importance': feature_importance})
-            feature_importance_df = feature_importance_df.sort_values('importance', ascending=False)
+#        st.write("특성 중요도:")
+#        if hasattr(model, 'feature_importances_') and hasattr(model, 'feautre_names_in_'):
+#            feature_importance = model.feature_importances_
+#            feature_names = model.feature_names_in_
+#            feature_importance_df = pd.DataFrame({'feature': features, 'importance': feature_importance})
+#            feature_importance_df = feature_importance_df.sort_values('importance', ascending=False)
             
-            fig, ax=plt.subplots()
-            sns.barplot(x='importance', y='feature', data=feature_importance_df, ax=ax)
-            plt.title('Feature Importance')
-            st.pyplot(fig)
-        else:
-            st.write("이 모델은 특성 중요도를 제공하지 않습니다.")
+#            fig, ax=plt.subplots()
+#            sns.barplot(x='importance', y='feature', data=feature_importance_df, ax=ax)
+#            plt.title('Feature Importance')
+#            st.pyplot(fig)
+#        else:
+#            st.write("이 모델은 특성 중요도를 제공하지 않습니다.")
 
     else:
         st.subheader('About')
