@@ -206,16 +206,6 @@ def main():
 
             #모델의 특성 순서에 맞게 데이터 정령
             input_encoded = input_encoded[model.feature_names_in_]
-            
-            user_input = {
-              '시설 유형': st.selectbox('병원 시설 번호', options=[1, 2, 3, 4, 5, 6, 7]),
-              '지하(0)/지상(1)': st.selectbox('층수', options=[0, 1]),
-              '기온 (°C)': st.number_input('온도 (°C)', value=0.0),
-              '상대습도 (%)': st.number_input('상대습도 (%)', value=0.0),
-              'PM2 농도 [log(μg/m³)]': st.number_input('PM2.1 농도 (μg/m³)', value=0.0),
-              'Coarse particle 농도 (ppm)': st.number_input('CO 농도 (ppm)', value=0.0)
-            }
-
 
             #예측
             prediction = model.predict(input_encoded)
