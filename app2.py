@@ -186,10 +186,10 @@ def main():
             user_input[feature] = st.selectbox(f"{feature} 선택", unique_values)
 
         # 수치형 변수 입력
-        for feature in numerical_features:
-            min_val = data[feature].min()
-            max_val = data[feature].max()
-            user_input[feature] = st.number_input(f"{feature} 입력", min_value=float(min_val),max_value=float(max_val),value=float(data[feature].mean()))
+#        for feature in numerical_features:
+#            min_val = data[feature].min()
+#            max_val = data[feature].max()
+#            user_input[feature] = st.number_input(f"{feature} 입력", min_value=float(min_val),max_value=float(max_val),value=float(data[feature].mean()))
 
 
         #예측 버튼
