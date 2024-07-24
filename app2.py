@@ -211,7 +211,7 @@ def main():
             #예측
             prediction = model.predict(input_encoded)
 
-            st.write(f'예측 결과: {prediction[0]} Log(Copy number/m3)')
+            st.write(f'## 오늘의 부유 진균 농도 예측 결과: {prediction[0]} Log(Copy number/m3)')
 
         st.write("특성 중요도:")
         if hasattr(model, 'feature_importances_') and hasattr(model, 'feautre_names_in_'):
